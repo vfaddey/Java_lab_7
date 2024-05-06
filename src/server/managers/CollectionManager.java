@@ -46,7 +46,8 @@ public class CollectionManager{
 
     public void addNewElement(Organization organization) {
         collection.add(organization);
-        lastUpdateDate = LocalDate.now();
+        this.lastUpdateDate = LocalDate.now();
+        updateInformation();
     }
 
     public void removeById(long id) throws ElementNotFoundException {
