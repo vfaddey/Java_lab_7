@@ -1,5 +1,6 @@
 package client.managers;
 
+import common.exceptions.AuthenticationFailedException;
 import common.responses.*;
 
 public class ResponseHandler {
@@ -12,6 +13,12 @@ public class ResponseHandler {
             return "Успешно: " + response;
         } else if (response instanceof ExitResponse) {
             System.exit(0);
+        } else if (response instanceof AuthenticateResponse) {
+            if (((AuthenticateResponse) response).getResult()) {
+                return "Авторизация прошла успешно!";
+            } else {
+                throw new AuthenticationFailedException("Авторизация не удалась. Возможно неверный пароль!");
+            }
         }
         return response.toString();
     }

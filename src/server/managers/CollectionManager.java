@@ -2,6 +2,7 @@ package server.managers;
 
 import client.managers.Validator;
 import common.exceptions.ElementNotFoundException;
+import server.db.DatabaseConnection;
 import server.interfaces.FileManager;
 import common.model.*;
 
@@ -20,6 +21,7 @@ public class CollectionManager{
     private String information;
     private LocalDate lastUpdateDate;
     private FileManager fileManager;
+    private DatabaseConnection connection;
 
     public CollectionManager(FileManager fileManager, String fileName) {
         this.fileManager = fileManager;
@@ -120,6 +122,13 @@ public class CollectionManager{
         }
     }
 
+    public DatabaseConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(DatabaseConnection connection) {
+        this.connection = connection;
+    }
 
     public String getInformation() {
         return information;

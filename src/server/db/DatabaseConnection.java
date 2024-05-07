@@ -16,8 +16,8 @@ public abstract class DatabaseConnection {
         this.connection = DriverManager.getConnection(url, login, password);
     }
 
-    public abstract boolean authenticateUser(String login, String password);
-    public abstract boolean addUser(String login, String password);
+    public abstract boolean authenticateUser(String login, String password) throws SQLException;
+    public abstract boolean addUser(String login, String password) throws SQLException;
     public abstract boolean addOrganization(String name,
                                             Coordinates coordinates,
                                             LocalDate date,
@@ -33,4 +33,5 @@ public abstract class DatabaseConnection {
                                                OrganizationType type,
                                                Address address);
 
+    public abstract boolean removeById(long id);
 }

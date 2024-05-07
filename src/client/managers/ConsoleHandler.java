@@ -25,7 +25,7 @@ public class ConsoleHandler {
     private final ResponseHandler responseHandler;
     private final Asker asker = new Asker();
     private final ScriptHandler scriptHandler = new ScriptHandler();
-
+    private boolean auth = false;
 
     public ConsoleHandler(RequestManager requestManager, Sender sender, ResponseHandler responseHandler) {
         this.requestManager = requestManager;
@@ -231,6 +231,19 @@ public class ConsoleHandler {
                 return askAddress();
             }
         }
+
+        public void setAuth(Request request) {
+            request.setLogin(askLogin());
+            request.setPassword(askPassword());
+        }
+
+        public String askLogin() {
+            return ask("Введите логин: ");
+        }
+
+        public String askPassword() {
+            return ask("Введите пароль: ");
+        }
     }
 
     public class ScriptHandler {
@@ -281,6 +294,11 @@ public class ConsoleHandler {
                 String request = next();
                 Response response = processUserRequest(request);
                 println(this.responseHandler.handleResponse(response));
+                if (!this.auth) {
+                    this.auth = true;
+                }
+            } catch (AuthenticationFailedException e) {
+                this.auth = false;
             } catch (Exception e) {
                 printError(e.toString());
                 break;
@@ -310,6 +328,9 @@ public class ConsoleHandler {
             }
             if (requestToServer instanceof AddRequest) {
                 this.asker.interactiveOrganizationCreation((AddRequest) requestToServer);
+            }
+            if (requestToServer instanceof AuthenticateRequest ||  requestToServer instanceof AddUserRequest) {
+                this.asker.setAuth(requestToServer);
             }
             if (requestToServer instanceof UpdateRequest) {
                 this.asker.updateElement((UpdateRequest) requestToServer);

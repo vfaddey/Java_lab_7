@@ -1,11 +1,15 @@
 package server;
 
 import server.commands.*;
+import server.db.Database;
+import server.db.DatabaseConnection;
+import server.db.PostgressDatabase;
 import server.interfaces.FileManager;
 import server.managers.*;
 import server.network.TCPServer;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class Server {
     public static void main(String[] args) throws IOException {
@@ -28,9 +32,19 @@ public class Server {
                 new RemoveAnyByAnnualTurnover("remove_any_by_annual_turnover"),
                 new Info("info"),
                 new RemoveGreater("remove_greater"),
-                new RemoveLower("remove_lower"));
+                new RemoveLower("remove_lower"),
+                new Login("login"),
+                new Register("register"));
         RequestHandler requestHandler = new RequestHandler(commandManager);
         TCPServer server = new TCPServer(commandManager, requestHandler, new Logger("logs.log"));
+        Database db = new PostgressDatabase("jdbc:postgresql://localhost:5432/studs", "postgres", "123");
+        try {
+            DatabaseConnection connection = db.createConnection();
+            collectionManager.setConnection(connection);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+
         try {
             server.openConnection();
             server.run();

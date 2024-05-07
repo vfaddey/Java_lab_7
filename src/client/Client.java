@@ -30,7 +30,9 @@ public class Client {
                 new RemoveAnyByAnnualTurnoverRequest("remove_by_annual_turnover"),
                 new ExecuteScriptRequest("execute_script"),
                 new ExitRequest("exit"),
-                new FilterContainsNameRequest("filter_contains_name"));
+                new FilterContainsNameRequest("filter_contains_name"),
+                new AuthenticateRequest("login"),
+                new AddUserRequest("register"));
 
         TCPClient tcpClient = new TCPClient(SERVER_ADDRESS, SERVER_PORT);
         Sender sender = new Sender(tcpClient);
