@@ -5,6 +5,8 @@ import java.io.Serializable;
 public abstract class Request implements Serializable {
     protected String commandName;
     protected String message = null;
+    protected String login;
+    protected String password;
 
     public Request(String commandName) {
         this.commandName = commandName;
@@ -28,5 +30,21 @@ public abstract class Request implements Serializable {
                 "commandName='" + commandName + '\'' +
                 ", message='" + message + '\'' +
                 '}';
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
