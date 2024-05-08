@@ -7,6 +7,7 @@ import server.interfaces.FileManager;
 import common.model.*;
 
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,6 +48,19 @@ public class CollectionManager{
     }
 
     public void addNewElement(Organization organization) {
+        try {
+            connection.addOrganization(organization.getName(),
+                    organization.getCoordinates(),
+                    organization.getCreationDate(),
+                    organization.getAnnualTurnover(),
+                    organization.getEmployeesCount(),
+                    organization.getType(),
+                    organization.getOfficialAddress(),
+                    "papa");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         collection.add(organization);
         this.lastUpdateDate = LocalDate.now();
         updateInformation();

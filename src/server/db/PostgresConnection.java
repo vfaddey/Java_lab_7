@@ -69,7 +69,7 @@ public class PostgresConnection extends DatabaseConnection {
         int addressId = addAddress(address);
         PreparedStatement ps = this.connection.prepareStatement("INSERT INTO organizations (" +
                 "name, coordinates_id, creation_date, annual_turnover, employees_count, type, official_address_id, owner_login)" +
-                "VALUES (?, ?, ?, ?, ?, CAST(? AS organization_type_enum), ?, ?) RETURNS id");
+                "VALUES (?, ?, ?, ?, ?, CAST(? AS organization_type_enum), ?, ?) RETURNING id");
 
         ps.setString(1, name);
         ps.setInt(2, coordinatesId);
@@ -90,7 +90,7 @@ public class PostgresConnection extends DatabaseConnection {
 
     @Override
     public int addLocation(Location location) throws SQLException {
-        PreparedStatement ps = this.connection.prepareStatement("INSERT INTO locations (x, y, z) VALUES (?, ?, ?) RETURNS id");
+        PreparedStatement ps = this.connection.prepareStatement("INSERT INTO locations (x, y, z) VALUES (?, ?, ?) RETURNING id");
         ps.setDouble(1, location.getX());
         ps.setDouble(2, location.getY());
         ps.setLong(3, location.getZ());
@@ -109,7 +109,7 @@ public class PostgresConnection extends DatabaseConnection {
         int locationId;
         if ((locationId = addLocation(address.getTown())) > 0) {
             PreparedStatement ps = this.connection.prepareStatement(
-                    "INSERT INTO address (zip_code, town_id) VALUES (?, ?) RETURNS id");
+                    "INSERT INTO address (zip_code, town_id) VALUES (?, ?) RETURNING id");
             ps.setString(1, address.getZipCode());
             ps.setInt(2, locationId);
 
@@ -123,7 +123,7 @@ public class PostgresConnection extends DatabaseConnection {
 
     @Override
     public int addCoordinates(Coordinates coordinates) throws SQLException {
-        PreparedStatement ps = this.connection.prepareStatement("INSERT INTO coordinates (x, y) VALUES (?, ?) RETURNS id");
+        PreparedStatement ps = this.connection.prepareStatement("INSERT INTO coordinates (x, y) VALUES (?, ?) RETURNING id");
         ps.setInt(1, coordinates.getX());
         ps.setLong(2, coordinates.getY());
         int id = -1;
