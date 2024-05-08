@@ -2,6 +2,7 @@ package server.db;
 
 import common.model.Address;
 import common.model.Coordinates;
+import common.model.Location;
 import common.model.OrganizationType;
 
 import java.sql.Connection;
@@ -18,13 +19,17 @@ public abstract class DatabaseConnection {
 
     public abstract boolean authenticateUser(String login, String password) throws SQLException;
     public abstract boolean addUser(String login, String password) throws SQLException;
-    public abstract boolean addOrganization(String name,
+    public abstract int addOrganization(String name,
                                             Coordinates coordinates,
                                             LocalDate date,
                                             long annualTurnover,
                                             int employeesCount,
                                             OrganizationType type,
-                                            Address address);
+                                            Address address,
+                                            String ownerLogin) throws SQLException;
+    public abstract int addLocation(Location location) throws SQLException;
+    public abstract int addAddress(Address address) throws SQLException;
+    public abstract int addCoordinates(Coordinates coordinates) throws SQLException;
 
     public abstract boolean updateOrganization(long id,
                                                Coordinates coordinates,

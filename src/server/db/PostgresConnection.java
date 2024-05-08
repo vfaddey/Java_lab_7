@@ -4,9 +4,11 @@ import common.exceptions.UserAlreadyExistsException;
 import common.exceptions.WrongPasswordException;
 import common.model.Address;
 import common.model.Coordinates;
+import common.model.Location;
 import common.model.OrganizationType;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,15 +60,78 @@ public class PostgresConnection extends DatabaseConnection {
         PreparedStatement ps = this.connection.prepareStatement("SELECT 1 FROM users WHERE login = ?");
         ps.setString(1, login);
         ResultSet resultSet = ps.executeQuery();
-        if (resultSet.next()) {
-            return true;
-        }
-        return false;
+        return resultSet.next();
     }
 
     @Override
-    public boolean addOrganization(String name, Coordinates coordinates, LocalDate date, long annualTurnover, int employeesCount, OrganizationType type, Address address) {
-        return false;
+    public int addOrganization(String name, Coordinates coordinates, LocalDate date, long annualTurnover, int employeesCount, OrganizationType type, Address address, String ownerLogin) throws SQLException {
+        int coordinatesId = addCoordinates(coordinates);
+        int addressId = addAddress(address);
+        PreparedStatement ps = this.connection.prepareStatement("INSERT INTO organizations (" +
+                "name, coordinates_id, creation_date, annual_turnover, employees_count, type, official_address_id, owner_login)" +
+                "VALUES (?, ?, ?, ?, ?, CAST(? AS organization_type_enum), ?, ?) RETURNS id");
+
+        ps.setString(1, name);
+        ps.setInt(2, coordinatesId);
+        ps.setDate(3, Date.valueOf(date));
+        ps.setLong(4, annualTurnover);
+        ps.setInt(5, employeesCount);
+        ps.setString(6, type.name());
+        ps.setInt(7, addressId);
+        ps.setString(8, ownerLogin);
+
+        int id = -1;
+        ResultSet resultSet = ps.executeQuery();
+        if (resultSet.next()) {
+            id = resultSet.getInt(1);
+        }
+        return id;
+    }
+
+    @Override
+    public int addLocation(Location location) throws SQLException {
+        PreparedStatement ps = this.connection.prepareStatement("INSERT INTO locations (x, y, z) VALUES (?, ?, ?) RETURNS id");
+        ps.setDouble(1, location.getX());
+        ps.setDouble(2, location.getY());
+        ps.setLong(3, location.getZ());
+
+        int id = -1;
+        ResultSet resultSet = ps.executeQuery();
+        if (resultSet.next()) {
+            id = resultSet.getInt(1);
+        }
+        return id;
+    }
+
+    @Override
+    public int addAddress(Address address) throws SQLException {
+        int id = -1;
+        int locationId;
+        if ((locationId = addLocation(address.getTown())) > 0) {
+            PreparedStatement ps = this.connection.prepareStatement(
+                    "INSERT INTO address (zip_code, town_id) VALUES (?, ?) RETURNS id");
+            ps.setString(1, address.getZipCode());
+            ps.setInt(2, locationId);
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+        }
+        return id;
+    }
+
+    @Override
+    public int addCoordinates(Coordinates coordinates) throws SQLException {
+        PreparedStatement ps = this.connection.prepareStatement("INSERT INTO coordinates (x, y) VALUES (?, ?) RETURNS id");
+        ps.setInt(1, coordinates.getX());
+        ps.setLong(2, coordinates.getY());
+        int id = -1;
+        ResultSet resultSet = ps.executeQuery();
+        if (resultSet.next()) {
+            id = resultSet.getInt(1);
+        }
+        return id;
     }
 
     @Override
