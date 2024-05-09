@@ -2,6 +2,9 @@ package client.managers;
 
 
 import common.exceptions.*;
+import common.network.AuthorizedUser;
+import common.network.GuestUser;
+import common.network.User;
 import common.requests.*;
 import common.responses.ErrorResponse;
 import common.responses.Response;
@@ -26,6 +29,7 @@ public class ConsoleHandler {
     private final Asker asker = new Asker();
     private final ScriptHandler scriptHandler = new ScriptHandler();
     private boolean auth = false;
+    private User user = new GuestUser();
 
     public ConsoleHandler(RequestManager requestManager, Sender sender, ResponseHandler responseHandler) {
         this.requestManager = requestManager;
