@@ -189,6 +189,8 @@ public class PostgresConnection extends DatabaseConnection {
         PreparedStatement ps1 = this.connection.prepareStatement("SELECT COUNT(*) FROM organizations WHERE owner_login = ?");
         PreparedStatement ps2 = this.connection.prepareStatement("DELETE FROM organizations WHERE owner_login = ?");
 
+        ps1.setString(1, login);
+        ps2.setString(1, login);
         ResultSet resultSet = ps1.executeQuery();
         if (resultSet.next()) {
             quantity = resultSet.getInt("count");
