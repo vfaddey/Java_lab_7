@@ -1,14 +1,13 @@
 package server.db;
 
-import common.model.Address;
-import common.model.Coordinates;
-import common.model.Location;
-import common.model.OrganizationType;
+import common.model.*;
+import common.network.AuthorizedUser;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.LinkedList;
 
 public abstract class DatabaseConnection {
     protected Connection connection;
@@ -38,5 +37,6 @@ public abstract class DatabaseConnection {
                                                OrganizationType type,
                                                Address address);
 
-    public abstract boolean removeById(long id);
+    public abstract boolean removeById(long id, AuthorizedUser user) throws SQLException;
+    public abstract LinkedList<Organization> getAllOrganizations() throws SQLException;
 }

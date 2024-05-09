@@ -2,10 +2,9 @@ package server.db;
 
 import common.exceptions.UserAlreadyExistsException;
 import common.exceptions.WrongPasswordException;
-import common.model.Address;
-import common.model.Coordinates;
-import common.model.Location;
-import common.model.OrganizationType;
+import common.model.*;
+import common.network.AuthorizedUser;
+import common.network.User;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
@@ -13,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.LinkedList;
 
 public class PostgresConnection extends DatabaseConnection {
     private final PasswordManager passwordManager = new PasswordManager();
@@ -140,7 +140,74 @@ public class PostgresConnection extends DatabaseConnection {
     }
 
     @Override
-    public boolean removeById(long id) {
+    public boolean removeById(long id, AuthorizedUser user) throws SQLException {
+        String login = user.getLogin();
+        if (isOrganizationOwner(login, id)) {
+            PreparedStatement ps = this.connection.prepareStatement("DELETE FROM organizations WHERE id = ?");
+            ps.setLong(1, id);
+
+            int count = ps.executeUpdate();
+            return count == 1;
+        }
         return false;
     }
+
+    private boolean isOrganizationOwner(String login, long id) throws SQLException {
+        PreparedStatement ps = this.connection.prepareStatement("SELECT owner_login FROM organizations WHERE id = ?");
+        ps.setLong(1, id);
+        ResultSet resultSet = ps.executeQuery();
+
+        if (resultSet.next()) {
+            String realOwner = resultSet.getString("owner_login");
+            return realOwner.equals(login);
+        }
+        return false;
+    }
+
+    @Override
+    public LinkedList<Organization> getAllOrganizations() throws SQLException {
+        LinkedList<Organization> result = new LinkedList<>();
+        String statement = "select o.*, c.x, c.y, l.x AS loc_x, l.y AS loc_y, l.z AS loc_z, a.zip_code FROM organizations o " +
+                "JOIN coordinates c ON o.coordinates_id = c.id " +
+                "JOIN address a ON o.official_address_id = a.id " +
+                "JOIN locations l ON a.town_id = l.id";
+
+        PreparedStatement ps = this.connection.prepareStatement(statement);
+        ResultSet resultSet = ps.executeQuery();
+
+        while (resultSet.next()) {
+            Organization organization = resultSetToOrganization(resultSet);
+            result.add(organization);
+        }
+        return result;
+    }
+
+    private Organization resultSetToOrganization(ResultSet resultSet) throws SQLException {
+        Long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        Integer x = resultSet.getInt("x");
+        long y = resultSet.getLong("y");
+        Coordinates coordinates = new Coordinates(x, y);
+        LocalDate creationDate = resultSet.getDate("creation_date").toLocalDate();
+        long annualTurnover = resultSet.getLong("annual_turnover");
+        int employeesCount = resultSet.getInt("employees_count");
+        OrganizationType type = OrganizationType.valueOf(resultSet.getString("type"));
+        String zipCode = resultSet.getString("zip_code");
+        double locX = resultSet.getDouble("loc_x");
+        double locY = resultSet.getDouble("loc_y");
+        long locZ = resultSet.getLong("loc_z");
+        Location location = new Location(locX, locY, locZ);
+        Address address = new Address(zipCode, location);
+
+        return new Organization(
+                                id,
+                                name,
+                                coordinates,
+                                creationDate,
+                                annualTurnover,
+                                employeesCount,
+                                type,
+                                address);
+    }
+
 }
