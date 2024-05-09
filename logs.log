@@ -1,6 +1,4 @@
-мая 09, 2024 12:33:39 AM server.managers.Logger log
-INFO: Подключенно: /127.0.0.1:9361
-мая 09, 2024 12:33:45 AM server.managers.Logger log
-INFO: Отправлено: Пользователь авторизован!
-мая 09, 2024 12:34:10 AM server.managers.Logger log
-INFO: Отправлено: Новый элемент добавлен!
+мая 09, 2024 3:58:34 PM server.managers.Logger log
+INFO: Подключенно: /127.0.0.1:4905
+мая 09, 2024 3:58:39 PM server.managers.Logger log
+INFO: Отправлено: Неверный пароль!

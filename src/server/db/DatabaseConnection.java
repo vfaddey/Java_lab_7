@@ -1,5 +1,6 @@
 package server.db;
 
+import common.exceptions.WrongPasswordException;
 import common.model.*;
 import common.network.AuthorizedUser;
 
@@ -16,7 +17,7 @@ public abstract class DatabaseConnection {
         this.connection = DriverManager.getConnection(url, login, password);
     }
 
-    public abstract boolean authenticateUser(String login, String password) throws SQLException;
+    public abstract boolean authenticateUser(String login, String password) throws SQLException, WrongPasswordException;
     public abstract boolean addUser(String login, String password) throws SQLException;
     public abstract int addOrganization(String name,
                                             Coordinates coordinates,

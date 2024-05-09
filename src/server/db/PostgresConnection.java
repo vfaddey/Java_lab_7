@@ -21,7 +21,7 @@ public class PostgresConnection extends DatabaseConnection {
     }
 
     @Override
-    public boolean authenticateUser(String login, String password) throws SQLException {
+    public boolean authenticateUser(String login, String password) throws SQLException, WrongPasswordException {
         PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE login = ?");
         ps.setString(1, login);
 
