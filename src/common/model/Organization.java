@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Organization implements Comparable<Organization>, Serializable {
 
-    private final Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+    private Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private final String name; //Поле не может быть null, Строка не может быть пустой
     private final Coordinates coordinates; //Поле не может быть null
     private final java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
@@ -28,6 +28,9 @@ public class Organization implements Comparable<Organization>, Serializable {
 
     public Long getId() {
         return id;
+    }
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -41,6 +41,7 @@ public class Server {
         try {
             DatabaseConnection connection = db.createConnection();
             collectionManager.setConnection(connection);
+            collectionManager.loadCollectionFromDB();
         } catch (SQLException e) {
             System.out.println(e.toString());
         }

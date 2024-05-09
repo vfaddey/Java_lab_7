@@ -27,8 +27,8 @@ public class CollectionManager{
     public CollectionManager(FileManager fileManager, String fileName) {
         this.fileManager = fileManager;
         lastUpdateDate = LocalDate.now();
-        loadCollectionFromCSV(fileName);
-        updateInformation();
+//        loadCollectionFromCSV(fileName);
+//        updateInformation();
     }
 
 
@@ -40,6 +40,11 @@ public class CollectionManager{
         }
     }
 
+    public void loadCollectionFromDB() throws SQLException {
+        this.collection = this.connection.getAllOrganizations();
+        updateInformation();
+    }
+
     private void updateInformation() {
         information = "Тип коллекции: " + LinkedList.class.getName() + "\n"
                 + "Хранит объекты типа: " + Organization.class.getName() + "\n"
@@ -49,7 +54,7 @@ public class CollectionManager{
 
     public void addNewElement(Organization organization) {
         try {
-            connection.addOrganization(organization.getName(),
+            long id = connection.addOrganization(organization.getName(),
                     organization.getCoordinates(),
                     organization.getCreationDate(),
                     organization.getAnnualTurnover(),
@@ -57,6 +62,7 @@ public class CollectionManager{
                     organization.getType(),
                     organization.getOfficialAddress(),
                     "papa");
+            organization.setId(id);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
