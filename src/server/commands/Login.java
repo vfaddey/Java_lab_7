@@ -1,9 +1,11 @@
 package server.commands;
 
+import common.exceptions.WrongPasswordException;
 import common.requests.AuthenticateRequest;
 import common.requests.RequestDTO;
 import common.responses.AuthenticateResponse;
 import common.responses.EmptyResponse;
+import common.responses.ErrorResponse;
 import common.responses.Response;
 
 import java.io.IOException;
@@ -25,7 +27,9 @@ public class Login extends Command{
                 return new AuthenticateResponse(request.getCommandName(), successPhrase, true);
             }
         } catch (SQLException e) {
-            return new AuthenticateResponse(request.getCommandName(), successPhrase, false);
+            return new AuthenticateResponse(request.getCommandName(), "Не удалось войти(", false);
+        } catch (WrongPasswordException e) {
+            return new ErrorResponse(e.getMessage());
         }
         return new EmptyResponse();
     }
