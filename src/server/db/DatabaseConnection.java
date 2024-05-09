@@ -40,4 +40,5 @@ public abstract class DatabaseConnection {
 
     public abstract boolean removeById(long id, AuthorizedUser user) throws SQLException;
     public abstract LinkedList<Organization> getAllOrganizations() throws SQLException;
+    public abstract int clearCollectionForUser(AuthorizedUser user) throws SQLException;
 }

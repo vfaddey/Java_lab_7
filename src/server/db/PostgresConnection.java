@@ -182,6 +182,24 @@ public class PostgresConnection extends DatabaseConnection {
         return result;
     }
 
+    @Override
+    public int clearCollectionForUser(AuthorizedUser user) throws SQLException {
+        String login  = user.getLogin();
+        int quantity = 0;
+        PreparedStatement ps1 = this.connection.prepareStatement("SELECT COUNT(*) FROM organizations WHERE owner_login = ?");
+        PreparedStatement ps2 = this.connection.prepareStatement("DELETE FROM organizations WHERE owner_login = ?");
+
+        ResultSet resultSet = ps1.executeQuery();
+        if (resultSet.next()) {
+            quantity = resultSet.getInt("count");
+        }
+
+        if (ps2.execute()) {
+            return quantity;
+        }
+        return 0;
+    }
+
     private Organization resultSetToOrganization(ResultSet resultSet) throws SQLException {
         Long id = resultSet.getLong("id");
         String name = resultSet.getString("name");
