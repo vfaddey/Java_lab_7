@@ -1,6 +1,7 @@
 package server.commands;
 
 import common.exceptions.ElementNotFoundException;
+import common.exceptions.UserIsNotOwnerException;
 import common.network.GuestUser;
 import common.network.User;
 import common.requests.RequestDTO;
@@ -12,6 +13,8 @@ import common.model.Address;
 import common.model.Coordinates;
 import common.model.Organization;
 import common.model.OrganizationType;
+
+import java.sql.SQLException;
 
 /**
  * Command, needs to update element of collection by its id. Offers user to write required fields
@@ -79,10 +82,24 @@ public class Update extends Command {
                     type,
                     address,
                     request.getUser().getLogin());
-            collectionManager.setElementById(oldElement.getId(), newOrganization);
+            if (this.collectionManager.getConnection().updateOrganization(
+                    oldElement.getId(),
+                    name,
+                    coordinates,
+                    annualTurnover,
+                    employeesCount,
+                    type,
+                    address,
+                    request.getUser().getLogin())) {
+                collectionManager.setElementById(oldElement.getId(), newOrganization);
+            }
             return new SuccessResponse(getNameInConsole(), successPhrase);
         } catch (ElementNotFoundException e) {
             return new ErrorResponse(e.toString());
+        } catch (SQLException e) {
+            return new ErrorResponse("Не удалось обновить элемент(");
+        } catch (UserIsNotOwnerException e) {
+            return new ErrorResponse(e.getMessage());
         }
     }
 }

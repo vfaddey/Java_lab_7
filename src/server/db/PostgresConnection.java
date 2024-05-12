@@ -1,6 +1,7 @@
 package server.db;
 
 import common.exceptions.UserAlreadyExistsException;
+import common.exceptions.UserIsNotOwnerException;
 import common.exceptions.WrongPasswordException;
 import common.model.*;
 import common.network.AuthorizedUser;
@@ -167,7 +168,10 @@ public class PostgresConnection extends DatabaseConnection {
     }
 
     @Override
-    public boolean updateOrganization(long id, String name, Coordinates coordinates, long annualTurnover, int employeesCount, OrganizationType type, Address address) throws SQLException {
+    public boolean updateOrganization(long id, String name, Coordinates coordinates, long annualTurnover, int employeesCount, OrganizationType type, Address address, String ownerLogin) throws SQLException, UserIsNotOwnerException {
+        if (!isOrganizationOwner(ownerLogin, id)) {
+            throw new UserIsNotOwnerException("Вы не являетесь владельцем элемента!");
+        }
         PreparedStatement ps = this.connection.prepareStatement("UPDATE organizations" +
                 " SET (name, coordinates_id, annual_turnover, employees_cout, type, official_address_id) =" +
                 " (?, ?, ?, ?, CAST(? AS organization_type_enum), ?)" +

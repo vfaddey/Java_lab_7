@@ -1,5 +1,6 @@
 package server.db;
 
+import common.exceptions.UserIsNotOwnerException;
 import common.exceptions.WrongPasswordException;
 import common.model.*;
 import common.network.AuthorizedUser;
@@ -38,7 +39,8 @@ public abstract class DatabaseConnection {
                                                long annualTurnover,
                                                int employeesCount,
                                                OrganizationType type,
-                                               Address address) throws SQLException;
+                                               Address address,
+                                               String ownerLogin) throws SQLException, UserIsNotOwnerException;
 
     public abstract boolean removeById(long id, User user) throws SQLException;
     public abstract LinkedList<Organization> getAllOrganizations() throws SQLException;
