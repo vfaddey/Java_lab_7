@@ -33,11 +33,12 @@ public abstract class DatabaseConnection {
     public abstract int addCoordinates(Coordinates coordinates) throws SQLException;
 
     public abstract boolean updateOrganization(long id,
+                                               String name,
                                                Coordinates coordinates,
                                                long annualTurnover,
                                                int employeesCount,
                                                OrganizationType type,
-                                               Address address);
+                                               Address address) throws SQLException;
 
     public abstract boolean removeById(long id, User user) throws SQLException;
     public abstract LinkedList<Organization> getAllOrganizations() throws SQLException;

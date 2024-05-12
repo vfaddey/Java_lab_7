@@ -134,9 +134,63 @@ public class PostgresConnection extends DatabaseConnection {
         return id;
     }
 
+    private int checkIfExists(Coordinates coordinates) throws SQLException {
+        PreparedStatement ps = this.connection.prepareStatement("SELECT id FROM coordinates" +
+                "WHERE x = ? AND y = ?");
+        ps.setInt(1, coordinates.getX());
+        ps.setLong(2, coordinates.getY());
+
+        ResultSet resultSet = ps.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getInt("id");
+        }
+        return -1;
+    }
+
+    private int checkIfExists(Address address) throws SQLException {
+        PreparedStatement ps = this.connection.prepareStatement("SELECT ad.id FROM address ad" +
+                "JOIN locations l ON ad.town_id = l.id" +
+                "WHERE l.x = ? AND l.y = ? AND l.z = ? AND ad.zip_code = ?");
+
+        Location location = address.getTown();
+
+        ps.setDouble(1, location.getX());
+        ps.setDouble(2, location.getY());
+        ps.setLong(3, location.getZ());
+        ps.setString(4, address.getZipCode());
+
+        ResultSet resultSet = ps.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getInt("id");
+        }
+        return -1;
+    }
+
     @Override
-    public boolean updateOrganization(long id, Coordinates coordinates, long annualTurnover, int employeesCount, OrganizationType type, Address address) {
-        return false;
+    public boolean updateOrganization(long id, String name, Coordinates coordinates, long annualTurnover, int employeesCount, OrganizationType type, Address address) throws SQLException {
+        PreparedStatement ps = this.connection.prepareStatement("UPDATE organizations" +
+                " SET (name, coordinates_id, annual_turnover, employees_cout, type, official_address_id) =" +
+                " (?, ?, ?, ?, CAST(? AS organization_type_enum), ?)" +
+                "WHERE id = ?");
+
+        int coordinatesId = checkIfExists(coordinates);
+        if (coordinatesId < 0) {
+            coordinatesId = addCoordinates(coordinates);
+        }
+        int addressId = checkIfExists(address);
+        if (addressId < 0) {
+            addressId = addAddress(address);
+        }
+
+        ps.setString(1, name);
+        ps.setInt(2, coordinatesId);
+        ps.setLong(3, annualTurnover);
+        ps.setInt(4, employeesCount);
+        ps.setString(5, type.name());
+        ps.setInt(6, addressId);
+        ps.setLong(7, id);
+
+        return ps.executeUpdate() > 0;
     }
 
     @Override
