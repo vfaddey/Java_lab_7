@@ -74,15 +74,13 @@ public class CollectionManager{
     }
 
     public void removeById(long id, User user) throws ElementNotFoundException, SQLException {
-        int len = this.collection.size();
-        collection.removeIf(org -> (org.getId() == id && user.getLogin().equals(org.getOwnerLogin())));
-        this.connection.removeById(id, user);
-        if (len < this.collection.size()) {
+        boolean result = collection.removeIf(org -> (org.getId() == id && user.getLogin().equals(org.getOwnerLogin())));
+        if (result) {
+            this.connection.removeById(id, user);
             lastUpdateDate = LocalDate.now();
         } else {
-            throw new ElementNotFoundException("Элемент с таким id не найден.");
+            throw new ElementNotFoundException("Элемент с таким id не найден или Вы не являетесь его создателем.");
         }
-
     }
 
     public LinkedList<Organization> getCollection() {

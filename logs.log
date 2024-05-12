@@ -1,24 +1,6 @@
-мая 10, 2024 6:10:11 PM server.managers.Logger log
-INFO: Подключенно: /127.0.0.1:12301
-мая 10, 2024 6:10:29 PM server.managers.Logger log
+мая 12, 2024 5:05:46 PM server.managers.Logger log
+INFO: Подключенно: /127.0.0.1:9830
+мая 12, 2024 5:05:49 PM server.managers.Logger log
 INFO: Отправлено: Organization{id=14, name='ПАО Гранд', coordinates=Coordinates{x=150, y=250}, creationDate=2024-05-06, annualTurnover=1500000, employeesCount=75, type=OrganizationType{Публичная}, officialAddress=Address{zipCode='Vologda', town=Location{x=15.2, y=25.6, z=150}}, ownerLogin='jane_smith'}
 Organization{id=15, name='ЗАО СтройПрогресс', coordinates=Coordinates{x=120, y=220}, creationDate=2024-05-06, annualTurnover=800000, employeesCount=30, type=OrganizationType{ООО}, officialAddress=Address{zipCode='Moscow', town=Location{x=12.7, y=22.3, z=120}}, ownerLogin='alex_king'}
-Organization{id=17, name='youtube', coordinates=Coordinates{x=43, y=43}, creationDate=2024-05-09, annualTurnover=4354535, employeesCount=4, type=OrganizationType{Коммерческая}, officialAddress=Address{zipCode='NY', town=Location{x=34.4, y=55.555, z=4}}, ownerLogin='papa'}
-
-мая 10, 2024 6:10:36 PM server.managers.Logger log
-INFO: Отправлено: Войдите в аккаунт для удаления элементов!
-мая 10, 2024 6:10:47 PM server.managers.Logger log
-INFO: Отправлено: Пользователь авторизован!
-мая 10, 2024 6:11:25 PM server.managers.Logger log
-INFO: Отправлено: Organization{id=14, name='ПАО Гранд', coordinates=Coordinates{x=150, y=250}, creationDate=2024-05-06, annualTurnover=1500000, employeesCount=75, type=OrganizationType{Публичная}, officialAddress=Address{zipCode='Vologda', town=Location{x=15.2, y=25.6, z=150}}, ownerLogin='jane_smith'}
-Organization{id=15, name='ЗАО СтройПрогресс', coordinates=Coordinates{x=120, y=220}, creationDate=2024-05-06, annualTurnover=800000, employeesCount=30, type=OrganizationType{ООО}, officialAddress=Address{zipCode='Moscow', town=Location{x=12.7, y=22.3, z=120}}, ownerLogin='alex_king'}
-Organization{id=17, name='youtube', coordinates=Coordinates{x=43, y=43}, creationDate=2024-05-09, annualTurnover=4354535, employeesCount=4, type=OrganizationType{Коммерческая}, officialAddress=Address{zipCode='NY', town=Location{x=34.4, y=55.555, z=4}}, ownerLogin='papa'}
-
-мая 10, 2024 6:11:38 PM server.managers.Logger log
-INFO: Отправлено: Новый элемент добавлен!
-мая 10, 2024 6:12:03 PM server.managers.Logger log
-INFO: Отправлено: Organization{id=14, name='ПАО Гранд', coordinates=Coordinates{x=150, y=250}, creationDate=2024-05-06, annualTurnover=1500000, employeesCount=75, type=OrganizationType{Публичная}, officialAddress=Address{zipCode='Vologda', town=Location{x=15.2, y=25.6, z=150}}, ownerLogin='jane_smith'}
-Organization{id=15, name='ЗАО СтройПрогресс', coordinates=Coordinates{x=120, y=220}, creationDate=2024-05-06, annualTurnover=800000, employeesCount=30, type=OrganizationType{ООО}, officialAddress=Address{zipCode='Moscow', town=Location{x=12.7, y=22.3, z=120}}, ownerLogin='alex_king'}
-Organization{id=17, name='youtube', coordinates=Coordinates{x=43, y=43}, creationDate=2024-05-09, annualTurnover=4354535, employeesCount=4, type=OrganizationType{Коммерческая}, officialAddress=Address{zipCode='NY', town=Location{x=34.4, y=55.555, z=4}}, ownerLogin='papa'}
-Organization{id=18, name='gfd ', coordinates=Coordinates{x=543, y=3}, creationDate=2024-05-10, annualTurnover=534534534, employeesCount=5, type=OrganizationType{Государственная}, officialAddress=Address{zipCode='ghjghdfkjg', town=Location{x=4.0, y=4.0, z=4}}, ownerLogin='papa'}
 

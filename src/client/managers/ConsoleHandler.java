@@ -355,7 +355,7 @@ public class ConsoleHandler {
                 scriptHandler.readScript(((ExecuteScriptRequest) requestToServer).getFilename());
                 return new SuccessResponse(requestToServer.getCommandName(), "Началось выполнение скрипта...");
             }
-            if (requestToServer.getUser() == null) {
+            if (!(requestToServer.getUser() instanceof GuestUser) && !(this.user instanceof GuestUser)) {
                 requestToServer.setUser(this.user);
             }
             return this.sender.sendRequest(requestToServer);

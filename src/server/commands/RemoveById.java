@@ -24,17 +24,13 @@ public class RemoveById extends Command {
         if (user instanceof GuestUser) {
             return new ErrorResponse("Войдите в аккаунт для удаления элементов!");
         }
-        if (request != null) {
-            try {
-                collectionManager.removeById(request.getId(), user);
-                return new SuccessResponse(getNameInConsole(), successPhrase);
-            } catch (ElementNotFoundException e) {
-                return new ErrorResponse(e.toString());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            return new EmptyResponse();
+        try {
+            collectionManager.removeById(request.getId(), user);
+            return new SuccessResponse(getNameInConsole(), successPhrase);
+        } catch (ElementNotFoundException e) {
+            return new ErrorResponse(e.toString());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
