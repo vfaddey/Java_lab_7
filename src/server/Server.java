@@ -36,7 +36,7 @@ public class Server {
                 new Login("login"),
                 new Register("register"));
         RequestHandler requestHandler = new RequestHandler(commandManager);
-        TCPServer server = new TCPServer(commandManager, requestHandler, new Logger("logs.log"));
+        TCPServer server = new TCPServer(requestHandler, new Logger("logs.log"));
         Database db = new PostgressDatabase("jdbc:postgresql://localhost:5432/studs", "postgres", "123");
         try {
             DatabaseConnection connection = db.createConnection();

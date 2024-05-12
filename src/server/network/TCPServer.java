@@ -26,12 +26,10 @@ public class TCPServer implements NetworkApp {
 
     private ServerSocketChannel serverSocketChannel;
     private Selector selector;
-    private CommandManager commandManager;
     private RequestHandler requestHandler;
     private Logger logger;
 
-    public TCPServer(CommandManager commandManager, RequestHandler requestHandler, Logger logger) {
-        this.commandManager = commandManager;
+    public TCPServer(RequestHandler requestHandler, Logger logger) {
         this.requestHandler = requestHandler;
         this.buffer = ByteBuffer.allocate(BUFFER_SIZE);
         this.logger = logger;
