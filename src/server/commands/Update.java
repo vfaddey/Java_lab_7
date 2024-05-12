@@ -35,6 +35,8 @@ public class Update extends Command {
         OrganizationType type;
         Address address;
 
+        String login = user.getLogin();
+
         if (user instanceof GuestUser) {
             return new ErrorResponse("Нельзя обновлять элементы. Войдите в аккаунт");
         }
@@ -97,7 +99,7 @@ public class Update extends Command {
         } catch (ElementNotFoundException e) {
             return new ErrorResponse(e.toString());
         } catch (SQLException e) {
-            return new ErrorResponse("Не удалось обновить элемент(");
+            return new ErrorResponse("Не удалось обновить элемент в базе данных(");
         } catch (UserIsNotOwnerException e) {
             return new ErrorResponse(e.getMessage());
         }

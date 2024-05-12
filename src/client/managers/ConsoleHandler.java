@@ -346,6 +346,7 @@ public class ConsoleHandler {
             }
             if (requestToServer instanceof AuthenticateRequest ||  requestToServer instanceof AddUserRequest) {
                 this.asker.setAuth(requestToServer);
+                return this.sender.sendRequest(requestToServer);
             }
             if (requestToServer instanceof UpdateRequest) {
                 this.asker.updateElement((UpdateRequest) requestToServer);
@@ -404,7 +405,7 @@ public class ConsoleHandler {
         List<Field> filteredFields = new ArrayList<>();
 
         for (Field field : fields) {
-            if (!field.getName().equals("id") && !field.getName().equals("creationDate")) {
+            if (!field.getName().equals("id") && !field.getName().equals("creationDate") && !field.getName().equals("ownerLogin")) {
                 filteredFields.add(field);
             }
         }

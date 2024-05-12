@@ -136,7 +136,7 @@ public class PostgresConnection extends DatabaseConnection {
     }
 
     private int checkIfExists(Coordinates coordinates) throws SQLException {
-        PreparedStatement ps = this.connection.prepareStatement("SELECT id FROM coordinates" +
+        PreparedStatement ps = this.connection.prepareStatement("SELECT id FROM coordinates " +
                 "WHERE x = ? AND y = ?");
         ps.setInt(1, coordinates.getX());
         ps.setLong(2, coordinates.getY());
@@ -149,8 +149,8 @@ public class PostgresConnection extends DatabaseConnection {
     }
 
     private int checkIfExists(Address address) throws SQLException {
-        PreparedStatement ps = this.connection.prepareStatement("SELECT ad.id FROM address ad" +
-                "JOIN locations l ON ad.town_id = l.id" +
+        PreparedStatement ps = this.connection.prepareStatement("SELECT ad.id FROM address ad " +
+                "JOIN locations l ON ad.town_id = l.id " +
                 "WHERE l.x = ? AND l.y = ? AND l.z = ? AND ad.zip_code = ?");
 
         Location location = address.getTown();
@@ -173,7 +173,7 @@ public class PostgresConnection extends DatabaseConnection {
             throw new UserIsNotOwnerException("Вы не являетесь владельцем элемента!");
         }
         PreparedStatement ps = this.connection.prepareStatement("UPDATE organizations" +
-                " SET (name, coordinates_id, annual_turnover, employees_cout, type, official_address_id) =" +
+                " SET (name, coordinates_id, annual_turnover, employees_count, type, official_address_id) =" +
                 " (?, ?, ?, ?, CAST(? AS organization_type_enum), ?)" +
                 "WHERE id = ?");
 
