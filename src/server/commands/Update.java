@@ -1,6 +1,8 @@
 package server.commands;
 
 import common.exceptions.ElementNotFoundException;
+import common.network.GuestUser;
+import common.network.User;
 import common.requests.RequestDTO;
 import common.requests.UpdateRequest;
 import common.responses.ErrorResponse;
@@ -22,6 +24,7 @@ public class Update extends Command {
     @Override
     public Response execute(RequestDTO requestDTO) {
         UpdateRequest request = (UpdateRequest) requestDTO.getRequest();
+        User user = request.getUser();
         String name;
         Coordinates coordinates;
         long annualTurnover;
@@ -29,6 +32,9 @@ public class Update extends Command {
         OrganizationType type;
         Address address;
 
+        if (user instanceof GuestUser) {
+            return new ErrorResponse("Нельзя обновлять элементы. Войдите в аккаунт");
+        }
         try {
             Organization oldElement = collectionManager.getElementById(request.getId());
 
@@ -71,7 +77,8 @@ public class Update extends Command {
                     annualTurnover,
                     employeesCount,
                     type,
-                    address);
+                    address,
+                    request.getUser().getLogin());
             collectionManager.setElementById(oldElement.getId(), newOrganization);
             return new SuccessResponse(getNameInConsole(), successPhrase);
         } catch (ElementNotFoundException e) {

@@ -2,6 +2,7 @@ package server.managers;
 
 import client.managers.Validator;
 import common.exceptions.ElementNotFoundException;
+import common.network.User;
 import server.db.DatabaseConnection;
 import server.interfaces.FileManager;
 import common.model.*;
@@ -72,9 +73,10 @@ public class CollectionManager{
         updateInformation();
     }
 
-    public void removeById(long id) throws ElementNotFoundException {
+    public void removeById(long id, User user) throws ElementNotFoundException, SQLException {
         int len = this.collection.size();
-        collection.removeIf(org -> org.getId() == id);
+        collection.removeIf(org -> (org.getId() == id && user.getLogin().equals(org.getOwnerLogin())));
+        this.connection.removeById(id, user);
         if (len < this.collection.size()) {
             lastUpdateDate = LocalDate.now();
         } else {
@@ -86,7 +88,8 @@ public class CollectionManager{
     public LinkedList<Organization> getCollection() {
         return collection;
     }
-    public void clearCollection() {
+    public void clearCollection(User user) throws SQLException {
+        this.connection.clearCollectionForUser(user);
         this.collection.clear();
     }
 

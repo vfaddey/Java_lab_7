@@ -1,6 +1,6 @@
 package common.network;
 
-public class AuthorizedUser implements User {
+public class AuthorizedUser extends User {
     private String login;
     private String password;
 

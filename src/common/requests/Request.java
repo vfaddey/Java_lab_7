@@ -1,12 +1,13 @@
 package common.requests;
 
+import common.network.User;
+
 import java.io.Serializable;
 
 public abstract class Request implements Serializable {
     protected String commandName;
     protected String message = null;
-    protected String login;
-    protected String password;
+    protected User user;
 
     public Request(String commandName) {
         this.commandName = commandName;
@@ -32,19 +33,12 @@ public abstract class Request implements Serializable {
                 '}';
     }
 
-    public String getLogin() {
-        return login;
+
+    public User getUser() {
+        return user;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -35,7 +35,17 @@ public class ConsoleHandler {
         this.requestManager = requestManager;
         this.sender = sender;
         this.responseHandler = responseHandler;
+        this.responseHandler.setConsoleHandler(this);
         this.consoleMode = ConsoleMode.INTERACTIVE;
+        this.user = new GuestUser();
+    }
+
+    public void setAuth(boolean auth) {
+        this.auth = auth;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public class Asker {
@@ -237,8 +247,9 @@ public class ConsoleHandler {
         }
 
         public void setAuth(Request request) {
-            request.setLogin(askLogin());
-            request.setPassword(askPassword());
+            String login = askLogin();
+            String password = askPassword();
+            request.setUser(new AuthorizedUser(login, password));
         }
 
         public String askLogin() {
@@ -343,6 +354,9 @@ public class ConsoleHandler {
                 this.consoleMode = ConsoleMode.FILE_READER;
                 scriptHandler.readScript(((ExecuteScriptRequest) requestToServer).getFilename());
                 return new SuccessResponse(requestToServer.getCommandName(), "Началось выполнение скрипта...");
+            }
+            if (requestToServer.getUser() == null) {
+                requestToServer.setUser(this.user);
             }
             return this.sender.sendRequest(requestToServer);
 

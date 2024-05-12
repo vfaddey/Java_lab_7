@@ -16,8 +16,8 @@ public class Register extends Command{
     @Override
     public Response execute(RequestDTO requestDTO) throws IOException {
         AddUserRequest request = (AddUserRequest) requestDTO.getRequest();
-        String login = request.getLogin();
-        String password = request.getPassword();
+        String login = request.getUser().getLogin();
+        String password = request.getUser().getPassword();
 
         try {
             this.collectionManager.getConnection().addUser(login, password);

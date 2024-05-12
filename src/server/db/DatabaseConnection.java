@@ -3,6 +3,7 @@ package server.db;
 import common.exceptions.WrongPasswordException;
 import common.model.*;
 import common.network.AuthorizedUser;
+import common.network.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -38,7 +39,7 @@ public abstract class DatabaseConnection {
                                                OrganizationType type,
                                                Address address);
 
-    public abstract boolean removeById(long id, AuthorizedUser user) throws SQLException;
+    public abstract boolean removeById(long id, User user) throws SQLException;
     public abstract LinkedList<Organization> getAllOrganizations() throws SQLException;
-    public abstract int clearCollectionForUser(AuthorizedUser user) throws SQLException;
+    public abstract int clearCollectionForUser(User user) throws SQLException;
 }

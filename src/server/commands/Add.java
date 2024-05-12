@@ -30,7 +30,8 @@ public class Add extends Command implements CommandWithoutParameters {
                     request.getAnnualTurnover(),
                     request.getEmployeesCount(),
                     request.getOrganizationType(),
-                    request.getAddress()
+                    request.getAddress(),
+                    request.getUser().getLogin()
             );
             collectionManager.addNewElement(organization);
             return new SuccessResponse(getNameInConsole(), successPhrase);

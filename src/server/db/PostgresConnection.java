@@ -140,7 +140,7 @@ public class PostgresConnection extends DatabaseConnection {
     }
 
     @Override
-    public boolean removeById(long id, AuthorizedUser user) throws SQLException {
+    public boolean removeById(long id, User user) throws SQLException {
         String login = user.getLogin();
         if (isOrganizationOwner(login, id)) {
             PreparedStatement ps = this.connection.prepareStatement("DELETE FROM organizations WHERE id = ?");
@@ -183,7 +183,7 @@ public class PostgresConnection extends DatabaseConnection {
     }
 
     @Override
-    public int clearCollectionForUser(AuthorizedUser user) throws SQLException {
+    public int clearCollectionForUser(User user) throws SQLException {
         String login  = user.getLogin();
         int quantity = 0;
         PreparedStatement ps1 = this.connection.prepareStatement("SELECT COUNT(*) FROM organizations WHERE owner_login = ?");
@@ -218,6 +218,7 @@ public class PostgresConnection extends DatabaseConnection {
         long locZ = resultSet.getLong("loc_z");
         Location location = new Location(locX, locY, locZ);
         Address address = new Address(zipCode, location);
+        String ownerLogin = resultSet.getString("owner_login");
 
         return new Organization(
                                 id,
@@ -227,7 +228,8 @@ public class PostgresConnection extends DatabaseConnection {
                                 annualTurnover,
                                 employeesCount,
                                 type,
-                                address);
+                                address,
+                                ownerLogin);
     }
 
 }

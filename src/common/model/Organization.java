@@ -14,6 +14,7 @@ public class Organization implements Comparable<Organization>, Serializable {
     private final Integer employeesCount; //Поле не может быть null, Значение поля должно быть больше 0
     private final OrganizationType type; //Поле не может быть null
     private final Address officialAddress; //Поле может быть null
+    private String ownerLogin;
 
     public Organization(Long id, String name, Coordinates coordinates, LocalDate creationDate, Long annualTurnover, Integer employeesCount, OrganizationType type, Address officialAddress) {
         this.id = id;
@@ -24,6 +25,18 @@ public class Organization implements Comparable<Organization>, Serializable {
         this.employeesCount = employeesCount;
         this.type = type;
         this.officialAddress = officialAddress;
+    }
+
+    public Organization(Long id, String name, Coordinates coordinates, LocalDate creationDate, Long annualTurnover, Integer employeesCount, OrganizationType type, Address officialAddress, String ownerLogin) {
+        this.id = id;
+        this.name = name;
+        this.coordinates = coordinates;
+        this.creationDate = creationDate;
+        this.annualTurnover = annualTurnover;
+        this.employeesCount = employeesCount;
+        this.type = type;
+        this.officialAddress = officialAddress;
+        this.ownerLogin = ownerLogin;
     }
 
     public Long getId() {
@@ -62,20 +75,6 @@ public class Organization implements Comparable<Organization>, Serializable {
     }
 
     @Override
-    public String toString() {
-        return "Organization{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", coordinates=" + coordinates +
-                ", creationDate=" + creationDate +
-                ", annualTurnover=" + annualTurnover +
-                ", employeesCount=" + employeesCount +
-                ", type=" + type +
-                ", officialAddress=" + officialAddress +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
@@ -106,5 +105,24 @@ public class Organization implements Comparable<Organization>, Serializable {
         }
 
         return this.employeesCount.compareTo(o.getEmployeesCount());
+    }
+
+    public String getOwnerLogin() {
+        return ownerLogin;
+    }
+
+    @Override
+    public String toString() {
+        return "Organization{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", coordinates=" + coordinates +
+                ", creationDate=" + creationDate +
+                ", annualTurnover=" + annualTurnover +
+                ", employeesCount=" + employeesCount +
+                ", type=" + type +
+                ", officialAddress=" + officialAddress +
+                ", ownerLogin='" + ownerLogin + '\'' +
+                '}';
     }
 }
