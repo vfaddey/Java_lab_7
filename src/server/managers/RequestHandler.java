@@ -6,6 +6,7 @@ import common.responses.Response;
 import server.commands.Command;
 
 import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 
 public class RequestHandler {
     private final CommandManager commandManager;
@@ -15,6 +16,7 @@ public class RequestHandler {
     }
 
     public <T extends Response> T handleRequest(ByteBuffer buffer) {
+
         T response;
         RequestDTO requestDTO;
         try {

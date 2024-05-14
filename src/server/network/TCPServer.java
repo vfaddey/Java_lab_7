@@ -10,24 +10,25 @@ import server.managers.RequestHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
+import java.util.concurrent.*;
 
 public class TCPServer implements NetworkApp {
     private static final int BUFFER_SIZE = 4096;
-    private ByteBuffer buffer;
+    private final ByteBuffer buffer;
+    private final int poolSize = 5;
+    private final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(poolSize);
+    private final ForkJoinPool forkJoinPool = new ForkJoinPool();
 
     private static final String HOST = "localhost";
     private static final int PORT = 8080;
 
     private ServerSocketChannel serverSocketChannel;
     private Selector selector;
-    private RequestHandler requestHandler;
-    private Logger logger;
+    private final RequestHandler requestHandler;
+    private final Logger logger;
 
     public TCPServer(RequestHandler requestHandler, Logger logger) {
         this.requestHandler = requestHandler;
@@ -78,8 +79,10 @@ public class TCPServer implements NetworkApp {
                 accept(key);
             } else if (key.isReadable()) {
                 read(key);
+                key.cancel();
             } else if (key.isWritable()) {
                 write(key);
+                key.cancel();
             }
         }
     }
@@ -111,11 +114,19 @@ public class TCPServer implements NetworkApp {
         }
         this.buffer.flip();
 
-        Response response = requestHandler.handleRequest(buffer);
-        System.out.println(response);
-        logger.log("Отправлено: " + response.toString());
+        Runnable task = () -> {
+            Response response = requestHandler.handleRequest(buffer);
+            System.out.println(response);
+            logger.log("Отправлено: " + response.toString());
 
-        socketChannel.register(this.selector, SelectionKey.OP_WRITE, response);
+            try {
+                socketChannel.register(selector, SelectionKey.OP_WRITE, response);
+            } catch (ClosedChannelException e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        this.fixedThreadPool.submit(task);
     }
 
     public void close() throws IOException {
@@ -124,17 +135,28 @@ public class TCPServer implements NetworkApp {
         }
     }
 
-    private void write(SelectionKey key) throws IOException {
-        SocketChannel socketChannel = (SocketChannel) key.channel();
-        Response response = (Response) key.attachment();
+    private void write(SelectionKey key) {
+        RecursiveAction writeAction = new RecursiveAction() {
+            @Override
+            protected void compute() {
+                try {
+                    SocketChannel socketChannel = (SocketChannel) key.channel();
+                    Response response = (Response) key.attachment();
 
-        ByteBuffer writeBuffer = Serializer.serializeObject(response);
-        writeBuffer.flip();
-        while (writeBuffer.hasRemaining()) {
-            socketChannel.write(writeBuffer);
-        }
+                    ByteBuffer writeBuffer = Serializer.serializeObject(response);
+                    writeBuffer.flip();
+                    while (writeBuffer.hasRemaining()) {
+                        socketChannel.write(writeBuffer);
+                    }
+                    System.out.println("Отправил !!!");
 
-        socketChannel.register(selector, SelectionKey.OP_READ);
+                    socketChannel.register(selector, SelectionKey.OP_READ);
+                } catch (IOException e) {
+                    System.out.println(e.toString());
+                }
+            }
+        };
+        forkJoinPool.execute(writeAction);
     }
 
 }
