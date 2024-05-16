@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public abstract class DatabaseConnection {
     protected Connection connection;
@@ -43,6 +44,6 @@ public abstract class DatabaseConnection {
                                                String ownerLogin) throws SQLException, UserIsNotOwnerException;
 
     public abstract boolean removeById(long id, User user) throws SQLException;
-    public abstract LinkedList<Organization> getAllOrganizations() throws SQLException;
+    public abstract ConcurrentLinkedDeque<Organization> getAllOrganizations() throws SQLException;
     public abstract int clearCollectionForUser(User user) throws SQLException;
 }

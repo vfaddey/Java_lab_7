@@ -11,6 +11,7 @@ import common.model.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.stream.Collectors;
 
 
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  * Class, that manage the collection, makes requests to user
  */
 public class CollectionManager{
-    private LinkedList<Organization> collection;
+    private ConcurrentLinkedDeque<Organization> collection;
     private String collectionFilename;
     private String information;
     private LocalDate lastUpdateDate;
@@ -28,18 +29,16 @@ public class CollectionManager{
     public CollectionManager(FileManager fileManager, String fileName) {
         this.fileManager = fileManager;
         lastUpdateDate = LocalDate.now();
-//        loadCollectionFromCSV(fileName);
-//        updateInformation();
     }
 
 
-    public void loadCollectionFromCSV(String fileName) {
-        this.collection = fileManager.read(fileName);
-        this.collectionFilename = fileName;
-        if (collection != null) {
-            Collections.sort(collection);
-        }
-    }
+//    public void loadCollectionFromCSV(String fileName) {
+//        this.collection = fileManager.read(fileName);
+//        this.collectionFilename = fileName;
+//        if (collection != null) {
+//            Collections.sort(collection);
+//        }
+//    }
 
     public void loadCollectionFromDB() throws SQLException {
         this.collection = this.connection.getAllOrganizations();
@@ -83,7 +82,7 @@ public class CollectionManager{
         }
     }
 
-    public LinkedList<Organization> getCollection() {
+    public ConcurrentLinkedDeque<Organization> getCollection() {
         return collection;
     }
     public void clearCollection(User user) throws SQLException {
@@ -120,8 +119,17 @@ public class CollectionManager{
     }
 
     public void shuffleCollection() {
-        Collections.shuffle(collection);
+        shuffleDeque(collection);
         lastUpdateDate = LocalDate.now();
+    }
+
+    private <T> void shuffleDeque(ConcurrentLinkedDeque<T> deque) {
+        synchronized (deque) {
+            List<T> list = new ArrayList<>(deque);
+            deque.clear();
+            Collections.shuffle(list);
+            deque.addAll(list);
+        }
     }
 
     public Organization[] getElementsByAnnualTurnover(long annualTurnover) {
@@ -136,11 +144,44 @@ public class CollectionManager{
 
     public void setElementById(long id, Organization element) {
         for (int i = 0; i < collection.size(); i++) {
-            if (collection.get(i).getId() == id) {
-                collection.set(i, element);
+            if (getElementAt(i).getId() == id) {
+                setElementAt(i, element);
                 break;
             }
         }
+    }
+
+    public Organization getElementAt(int index) {
+        int currentIndex = 0;
+        for (Organization element : collection) {
+            if (currentIndex == index) {
+                return element;
+            }
+            currentIndex++;
+        }
+        throw new IndexOutOfBoundsException("Индекс: " + index + ", Размер: " + currentIndex);
+    }
+
+    public void setElementAt(int index, Organization newValue) {
+        int currentIndex = 0;
+        Iterator<Organization> iterator = this.collection.iterator();
+        while (iterator.hasNext()) {
+            Organization element = iterator.next();
+            if (currentIndex == index) {
+                synchronized (collection) {
+                    if (collection.contains(element)) {
+                        iterator.remove();
+                        collection.addFirst(newValue);
+                        for (int i = 0; i < currentIndex; i++) {
+                            collection.addLast(collection.pollFirst());
+                        }
+                    }
+                }
+                return;
+            }
+            currentIndex++;
+        }
+        throw new IndexOutOfBoundsException("Индекс: " + index + ", Размер: " + currentIndex);
     }
 
     public DatabaseConnection getConnection() {

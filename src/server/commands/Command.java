@@ -1,6 +1,7 @@
 package server.commands;
 
 
+import common.model.Organization;
 import common.requests.RequestDTO;
 import common.responses.EmptyResponse;
 import common.responses.Response;
@@ -9,6 +10,8 @@ import server.managers.CollectionManager;
 import server.managers.CommandManager;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Abstract class of command
@@ -58,6 +61,12 @@ public abstract class Command {
 
     public Response execute(RequestDTO requestDTO) throws IOException {
         return new EmptyResponse();
+    }
+
+    protected LinkedList<Organization> convertToLinkedList(ConcurrentLinkedDeque deque) {
+        synchronized (deque) {
+            return new LinkedList<>(deque);
+        }
     }
 
 }

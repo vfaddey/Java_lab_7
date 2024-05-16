@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class PostgresConnection extends DatabaseConnection {
     private final PasswordManager passwordManager = new PasswordManager();
@@ -223,8 +224,8 @@ public class PostgresConnection extends DatabaseConnection {
     }
 
     @Override
-    public LinkedList<Organization> getAllOrganizations() throws SQLException {
-        LinkedList<Organization> result = new LinkedList<>();
+    public ConcurrentLinkedDeque<Organization> getAllOrganizations() throws SQLException {
+        ConcurrentLinkedDeque<Organization> result = new ConcurrentLinkedDeque<>();
         String statement = "select o.*, c.x, c.y, l.x AS loc_x, l.y AS loc_y, l.z AS loc_z, a.zip_code FROM organizations o " +
                 "JOIN coordinates c ON o.coordinates_id = c.id " +
                 "JOIN address a ON o.official_address_id = a.id " +

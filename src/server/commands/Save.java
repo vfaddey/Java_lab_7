@@ -12,7 +12,7 @@ public class Save extends Command implements CommandWithoutParameters {
 
     @Override
     public Response execute(RequestDTO requestDTO) {
-        fileManager.write(collectionManager.getCollection(), collectionManager.getCollectionFilename());
+        fileManager.write(convertToLinkedList(collectionManager.getCollection()), collectionManager.getCollectionFilename());
         return new SuccessResponse(getNameInConsole(), successPhrase);
     }
 }

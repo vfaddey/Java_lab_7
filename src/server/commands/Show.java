@@ -10,6 +10,7 @@ import server.interfaces.CommandWithoutParameters;
 import common.model.Organization;
 
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 
 public class Show extends Command implements CommandWithoutParameters {
@@ -24,13 +25,13 @@ public class Show extends Command implements CommandWithoutParameters {
         if (request != null) {
             if (request.getQuantity() < 0) {
                 ShowResponse response = new ShowResponse(getNameInConsole(), successPhrase);
-                response.setOrganizations(collectionManager.getCollection());
+                response.setOrganizations(convertToLinkedList(collectionManager.getCollection()));
                 return response;
             } else {
                 LinkedList<Organization> organizationsToSend = new LinkedList<>();
                 if (request.getQuantity() <= collectionManager.getCollection().size()) {
                     for (int i = 0; i < request.getQuantity(); i++) {
-                        organizationsToSend.add(collectionManager.getCollection().get(i));
+                        organizationsToSend.add(collectionManager.getElementAt(i));
                     }
                     ShowResponse response = new ShowResponse(getNameInConsole(), successPhrase);
                     response.setOrganizations(organizationsToSend);
@@ -43,4 +44,5 @@ public class Show extends Command implements CommandWithoutParameters {
             return new EmptyResponse();
         }
     }
+
 }

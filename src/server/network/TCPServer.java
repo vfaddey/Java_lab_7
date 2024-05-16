@@ -148,7 +148,6 @@ public class TCPServer implements NetworkApp {
                     while (writeBuffer.hasRemaining()) {
                         socketChannel.write(writeBuffer);
                     }
-                    System.out.println("Отправил !!!");
 
                     socketChannel.register(selector, SelectionKey.OP_READ);
                 } catch (IOException e) {
