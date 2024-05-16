@@ -17,5 +17,4 @@ public class PostgressDatabase extends Database {
     public DatabaseConnection createConnection() throws SQLException {
         return new PostgresConnection(url, login, password);
     }
-
 }
