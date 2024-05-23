@@ -3,14 +3,12 @@ package server.db;
 import common.exceptions.UserIsNotOwnerException;
 import common.exceptions.WrongPasswordException;
 import common.model.*;
-import common.network.AuthorizedUser;
 import common.network.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public abstract class DatabaseConnection {
