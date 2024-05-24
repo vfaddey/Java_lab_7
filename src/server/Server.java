@@ -14,13 +14,12 @@ import java.sql.SQLException;
 public class Server {
     public static void main(String[] args) throws IOException {
         FileManager csvHandler = new CSVHandler();
-        CollectionManager collectionManager = new CollectionManager(csvHandler, "src/server/collection.csv");
+        CollectionManager collectionManager = new CollectionManager(csvHandler);
         CommandManager commandManager = new CommandManager(csvHandler);
         commandManager.setCollectionManager(collectionManager);
         commandManager.addCommands(
                 new Add("add"),
                 new Clear("clear"),
-                new Save("save"),
                 new Show("show"),
                 new Help("help"),
                 new Exit("exit"),

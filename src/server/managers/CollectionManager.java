@@ -20,14 +20,11 @@ import java.util.stream.Collectors;
  */
 public class CollectionManager{
     private ConcurrentLinkedDeque<Organization> collection;
-    private String collectionFilename;
     private String information;
     private LocalDate lastUpdateDate;
-    private FileManager fileManager;
     private DatabaseConnection connection;
 
-    public CollectionManager(FileManager fileManager, String fileName) {
-        this.fileManager = fileManager;
+    public CollectionManager(FileManager fileManager) {
         lastUpdateDate = LocalDate.now();
     }
 
@@ -61,7 +58,7 @@ public class CollectionManager{
                     organization.getEmployeesCount(),
                     organization.getType(),
                     organization.getOfficialAddress(),
-                    "papa");
+                    organization.getOwnerLogin());
             organization.setId(id);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -87,11 +84,7 @@ public class CollectionManager{
     }
     public void clearCollection(User user) throws SQLException {
         this.connection.clearCollectionForUser(user);
-        this.collection.clear();
-    }
-
-    public String getCollectionFilename() {
-        return collectionFilename;
+        this.collection.removeIf((Organization o) -> o.getOwnerLogin().equals(user.getLogin()));
     }
 
     public Organization getElementById(long id) throws ElementNotFoundException {
@@ -194,9 +187,5 @@ public class CollectionManager{
 
     public String getInformation() {
         return information;
-    }
-
-    public void setFileManager(FileManager fileManager) {
-        this.fileManager = fileManager;
     }
 }

@@ -18,7 +18,6 @@ public class Client {
                 new ShowRequest("show"),
                 new HelpRequest("help"),
                 new InfoRequest("info"),
-                new SaveRequest("save"),
                 new RemoveByIdRequest("remove_by_id"),
                 new FilterLessThanAnnualTurnoverRequest("filter_less_than_annual_turnover"),
                 new ClearRequest("clear"),

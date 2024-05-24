@@ -24,7 +24,6 @@ public class CommandManager {
 
     public void setCollectionManager(CollectionManager collectionManager) {
         this.collectionManager = collectionManager;
-        this.collectionManager.setFileManager(fileManager);
         for (String key : commands.keySet()) {
             commands.get(key).setCollectionManager(collectionManager);
             commands.get(key).setFileManager(fileManager);
